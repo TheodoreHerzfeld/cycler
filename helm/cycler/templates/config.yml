@@ -3,5 +3,4 @@ kind: ConfigMap
 metadata:
   name: {{ include "cycler.fullname" . }}-config
 data:
-  config.yml: |-
-    {{- tpl ($.Files.Get "config.yml") . |nindent 4 }}
+  config.yml: {{ .Values.config }}

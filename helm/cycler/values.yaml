@@ -128,3 +128,12 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+checkSelf: true
+
+config:
+  scanDelay: 1
+  registryTimeout: 4
+  rates:
+    docker.io: 3600
+  log: INFO
