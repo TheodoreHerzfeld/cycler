@@ -4,8 +4,8 @@ metadata:
   name: {{ include "cycler.fullname" . }}
   labels:
     {{- include "cycler.labels" . | nindent 4 }}
-  # annotations:
-  #   "app.cycler.io/enable": "true"
+  annotations:
+    "app.cycler.io/enable": "true"
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
