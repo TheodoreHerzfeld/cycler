@@ -112,7 +112,7 @@ volumes:
     optional: false
 - name: cycler-config
   configMap:
-    name: cycler-config
+    name: "{{ .Release.Name }}-cycler-config"
 
 # Additional volumeMounts on the output Deployment definition.
 volumeMounts:
@@ -132,7 +132,7 @@ affinity: {}
 checkSelf: true
 
 config:
-  scanDelay: 1
+  scanDelay: 5
   registryTimeout: 4
   rates:
     docker.io: 3600
