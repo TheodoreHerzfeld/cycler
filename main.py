@@ -11,7 +11,7 @@ def log(level, line):
 
 def await_restart(namespace, name):
     timeouts[f"{namespace}.{name}"] = True
-    subprocess.run(f"kubectl rollout status deployment {name} -n {namespace}", shell=True, check=True, timeout=restartTimeout)
+    subprocess.run(f"kubectl rollout status deployment {name} -n {namespace}", shell=True, check=True, timeout=restartTimeout, stdout=subprocess.STDOUT)
     timeouts.pop(f"{namespace}.{name}")
 
 def get_pods(client, namespace, selector):
