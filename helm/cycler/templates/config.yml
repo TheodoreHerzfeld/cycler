@@ -3,5 +3,4 @@ kind: ConfigMap
 metadata:
   name: {{ include "cycler.fullname" . }}-config
 data:
-  config.yml: |-
-    {{ .Values.config | toYaml }}
+  config.yml: {{ .Values.config | toYaml }}
