@@ -105,9 +105,6 @@ volumes:
   secret:
     secretName: regsecret
     optional: false
-- name: cycler-config
-  configMap:
-    name: "{{ .Release.Name }}-cycler-config"
 
 # Additional volumeMounts on the output Deployment definition.
 volumeMounts:

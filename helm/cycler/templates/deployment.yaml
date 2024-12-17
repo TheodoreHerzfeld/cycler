@@ -55,6 +55,9 @@ spec:
       volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+        - name: cycler-config
+          configMap:
+            name: {{ .Release.Name }}-cycler-config
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
