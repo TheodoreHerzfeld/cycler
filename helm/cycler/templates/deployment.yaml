@@ -9,6 +9,8 @@ metadata:
     "app.cycler.io/enable": "true"
   {{- end }}
 spec:
+  strategy:
+    type: Recreate
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
