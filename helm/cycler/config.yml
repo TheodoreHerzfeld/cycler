@@ -1,0 +1,5 @@
+scanDelay: 1
+registryTimeout: 4
+rates:
+  docker.io: 3600
+log: INFO
