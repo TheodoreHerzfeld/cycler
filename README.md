@@ -2,7 +2,7 @@
 
 Cycler fills a very specific need:
 
-> I like my Kubernetes deployments to use the `latest` tag. What do I how do I 
+> I like my Kubernetes deployments to use the `latest` tag. How do I 
 > restart my deployments whenever it gets updated in the registry?
 
 Cycler monitors deployments annotated with `"app.cycler.io/enable": "true"` and triggers
