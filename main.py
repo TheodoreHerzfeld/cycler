@@ -45,7 +45,7 @@ def get_deployments(appClient, coreClient):
         if stopNow:
             print("bye!")
             exit(0)
-        if ("app.cycler.io/enable" in deployment.metadata.annotations) and (f"{deployment.metadata.namespace}.{deployment.metadata.name}" not in timeouts):
+        if ("app.cycler.io/enable" in deployment.metadata.annotations):
                 log("DEBUG", "")
                 log("DEBUG", f"Scanning {deployment.metadata.namespace}.{deployment.metadata.name}")
                 log("DEBUG", "====================================================================")
@@ -60,7 +60,7 @@ def get_deployments(appClient, coreClient):
                                 registrySHA = get_sha(image.image)
                                 if registrySHA == None:
                                     print(f"skipping {image.image} due to errors retreiving registry SHA")
-                                elif image.image_id.split("@sha256:")[1] != registrySHA:
+                                elif image.image_id.split("@sha256:")[1] != registrySHA and (f"{deployment.metadata.namespace}.{deployment.metadata.name}" not in timeouts):
                                     log("INFO", f"sha mismatch found for {image.image}:")
                                     log("INFO", f"live:     {image.image_id.split("@sha256:")[1]}")
                                     log("INFO", f"registry: {registrySHA}")
