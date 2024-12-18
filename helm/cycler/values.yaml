@@ -116,7 +116,7 @@ config:
   registryTimeout: 4
   rates:
     docker.io: 3600
-  loglevel: INFO
   startRated: false
+  loglevel: INFO
   notifications:
     discord:
