@@ -40,7 +40,7 @@ In addition to fairly standard Helm chart variables (see the [chart](./helm/cycl
 | Param | Description | Default
 |-|-|-|
 | `scanDelay` | Time to wait between scans | 5 seconds
-| `registryTimeout | How long should requests to regiestires be allowed to take (prevents the program from locking up due to rate limiting) | 4 seconds
+| `registryTimeout` | How long should requests to regiestires be allowed to take (prevents the program from locking up due to rate limiting) | 4 seconds
 | `rates` | How long to wait between requests to a specific domain, in seconds
 | `rates."docker.io"` | rate limitation for docker.io. Default is 1 hour | 3600 seconds
 | EXAMPLE `rates."domain.com"` | Would limit how often `domain.com` is queried when scanning, in seconds |
