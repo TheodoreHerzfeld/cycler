@@ -14,6 +14,7 @@ def log(level, line):
         print(line)
 
 def await_restart(namespace, name):
+    global timeouts
     timeouts[f"{namespace}.{name}"] = True
     subprocess.run(f"kubectl rollout status deployment {name} -n {namespace}", shell=True, check=True, timeout=restartTimeout, stdout=subprocess.DEVNULL, stderr=subprocess.STDOUT)
     timeouts.pop(f"{namespace}.{name}")
