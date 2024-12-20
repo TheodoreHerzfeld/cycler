@@ -22,6 +22,10 @@ To solve this problem, Cycler allows per-registry request limiting. Docker Hub i
 to only check once per hour, by default. See [configuration](Configuration) below for more
 information.
 
+## Healthchecks
+
+The container provides a health/readiness check at `/healthz`. See [`values.yaml`](#valuesyaml) for configuration information.
+
 ## Configuration
 
 Cycler is configured by default using [`values.yaml`](./helm/cycler/values.yaml).
@@ -39,12 +43,14 @@ In addition to fairly standard Helm chart variables (see the [chart](./helm/cycl
 
 | Param | Description | Default
 |-|-|-|
-| `scanDelay` | Time to wait between scans | 5 seconds
-| `registryTimeout` | How long should requests to regiestires be allowed to take (prevents the program from locking up due to rate limiting) | 4 seconds
-| `rates` | How long to wait between requests to a specific domain, in seconds
-| `rates."docker.io"` | rate limitation for docker.io. Default is 1 hour | 3600 seconds
+| `scanDelay` | Time to wait between scans | `5` seconds
+| `registryTimeout` | How long should requests to regiestires be allowed to take (prevents the program from locking up due to rate limiting) | `4` seconds
+| `rates` | (`dict`) How long to wait between requests to a specific domain, in seconds
+| `rates."docker.io"` | rate limitation for docker.io. Default is 1 hour | `3600` seconds
 | EXAMPLE `rates."domain.com"` | Would limit how often `domain.com` is queried when scanning, in seconds |
 | `startRated` | Should Cycler start with domain-specific rates set (`true`), or check all domains on its first scan (`false`)? | `false`
-| `loglevel` | Log verbosity. Set to either `"INFO"` (low) or `"DEBUG"` (high) | `"INFO"`
+| `loglevel` | Log verbosity. One of `CRITICAL`, `FATAL`, `ERROR`, `WARNING`, `WARN`, `INFO`, `DEBUG` | `"INFO"`
 | `notifications` | notification parameters. The following services are supported. `null` values disable a service
+| `hcPort` | Healthcheck port | `8080`
+| `hcLog` | Log healthchecks to console | `False`
 | `notifications.discord` | Discord webhook url to notify when a service is restarted | `null`
