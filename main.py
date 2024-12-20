@@ -152,7 +152,7 @@ def main():
     logger.addHandler(handler) 
 
     global checks
-    logger.info(f"Cycler is starting ({__version__})")
+    logger.info(f"Cycler is starting (v{__version__})")
     
     signal.signal(signal.SIGINT, exitGracefully)
     signal.signal(signal.SIGTERM, exitGracefully)
