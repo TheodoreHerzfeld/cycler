@@ -1,3 +1,5 @@
+__version__ = "0.2.1"
+
 import kubernetes, subprocess, json, threading, time, os, yaml, signal, logging, http.server, socketserver
 
 from typing import Tuple
@@ -150,7 +152,7 @@ def main():
     logger.addHandler(handler) 
 
     global checks
-    logger.info("Cycler is starting")
+    logger.info(f"Cycler is starting ({__version__})")
     
     signal.signal(signal.SIGINT, exitGracefully)
     signal.signal(signal.SIGTERM, exitGracefully)
