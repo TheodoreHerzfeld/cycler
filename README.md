@@ -50,7 +50,8 @@ In addition to fairly standard Helm chart variables (see the [chart](./helm/cycl
 | EXAMPLE `rates."domain.com"` | Would limit how often `domain.com` is queried when scanning, in seconds |
 | `startRated` | Should Cycler start with domain-specific rates set (`true`), or check all domains on its first scan (`false`)? | `false`
 | `loglevel` | Log verbosity. One of `CRITICAL`, `FATAL`, `ERROR`, `WARNING`, `WARN`, `INFO`, `DEBUG` | `"INFO"`
-| `notifications` | notification parameters. The following services are supported. `null` values disable a service
+| `notifications` | (`dict`) Notification parameters. The following services are supported. `null` values disable a service | `null`
+| `notifications.discord` | Discord webhook url | `null`
 | `hcPort` | Healthcheck port | `8080`
 | `hcLog` | Log healthchecks to console | `False`
 | `notifications.discord` | Discord webhook url to notify when a service is restarted | `null`
