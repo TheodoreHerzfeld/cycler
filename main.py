@@ -112,9 +112,9 @@ def get_deployments(appClient, coreClient):
                                 logger.info("ignorring normal indexing error - likely a non-atomic operation")
                         else:
                             logger.debug(f"delaying checking {image.image} because of rate limit settings ({times[image.image.split("/")[0]]} seconds until next check)")
-                for time in times:
-                    if times[time] <= 0:
-                        times[time] = rates[time]                 
+    for time in times:
+        if times[time] <= 0:
+            times[time] = rates[time]                 
 
 def get_sha(url):
     try:
@@ -134,6 +134,7 @@ def tick():
         for set in times:
             times[set] -= 1
         time.sleep(1)
+        logger.debug(f"tick {times}")
         
 def exitGracefully(signum, frame):
     logger.info("exiting gracefully")
