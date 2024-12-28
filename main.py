@@ -64,7 +64,6 @@ if startRated:
     times = dict(rates)
 else:
     times = { i: 0 for i in rates }
-    logger.info(f"rate times: {times}")
     
 ###
 checks["config"] = True
