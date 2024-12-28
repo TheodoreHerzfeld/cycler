@@ -7,6 +7,8 @@ from http import HTTPStatus
 
 from discord_webhook import DiscordWebhook
 
+
+
 LOG_LEVELS = {
     "CRITICAL": logging.CRITICAL,
     "FATAL": logging.FATAL,
@@ -24,6 +26,49 @@ checks = {
     "threads": False,
     "kubeconfig": False,
 }
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+handler = logging.StreamHandler()
+handler.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
+
+stopNow = False
+
+configPath = os.getenv("CYCLER_CONFIG") or "/etc/cycler/config.yml"
+
+with open(configPath) as stream:
+    try:
+        logger.info(f"Loading cycles config from {configPath}")
+        config = yaml.safe_load(stream)
+    except yaml.YAMLError as exc:
+        logger.fatal(f"ERROR LOADING CONFIG FROM {configPath}")
+        logger.fatal(exc)
+        
+# SET DEFAULTS
+scanDelay = config.get("scanDelay", 300)
+registryTimeout = config.get("registryTimeout", 5)
+secretsFile = config.get("secretsFile", "/etc/secrets/.dockerconfigjson")
+restartTimeout = config.get("restartTimeout", 60)
+logLevel = LOG_LEVELS[config.get("loglevel", "DEBUG")]
+notifications = config.get("notifications", None)
+startRated = config.get("startRated", False)
+hcPort = config.get("hcPort", 8080)
+hcLog = config.get("hcLog", False)
+
+rates = config.get("rates", {})
+if startRated:
+    logger.info("starting with rates set")
+    times = dict(rates)
+else:
+    times = { i: 0 for i in rates }
+    logger.info(f"rate times: {times}")
+    
+###
+checks["config"] = True
+###
 
 class Healthcheck(http.server.SimpleHTTPRequestHandler):
 
@@ -112,8 +157,9 @@ def get_deployments(appClient, coreClient):
                                 logger.info("ignorring normal indexing error - likely a non-atomic operation")
                         else:
                             logger.debug(f"delaying checking {image.image} because of rate limit settings ({times[image.image.split("/")[0]]} seconds until next check)")
+    
     for time in times:
-        if times[time] <= 0:
+        if times[time] <= -20: #give 20 second window to check for changes
             times[time] = rates[time]                 
 
 def get_sha(url):
@@ -143,70 +189,15 @@ def exitGracefully(signum, frame):
     stopNow = True
 
 def main():
-    global logger
-    logger = logging.getLogger(__name__)
-    logger.setLevel(logging.INFO)
-    handler = logging.StreamHandler()
-    handler.setLevel(logging.INFO)
-    formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-    handler.setFormatter(formatter)
-    logger.addHandler(handler) 
-
-    global checks
     logger.info(f"Cycler is starting (v{__version__})")
     
     signal.signal(signal.SIGINT, exitGracefully)
     signal.signal(signal.SIGTERM, exitGracefully)
     
-    #DEFAULTS
-    configPath = os.getenv("CYCLER_CONFIG") or "/etc/cycler/config.yml"
     scanDelay = 5
-
-    global registryTimeout
-    global secretsFile
-    global restartTimeout
-    global logLevel   
-    global notifications
-    global times
-    global stopNow
-    global hcLog
-
-    stopNow = False
-    
-    with open(configPath) as stream:
-        try:
-            logger.info(f"Loading cycles config from {configPath}")
-            config = yaml.safe_load(stream)
-        except yaml.YAMLError as exc:
-            logger.fatal(f"ERROR LOADING CONFIG FROM {configPath}")
-            logger.fatal(exc)
-            
-    # SET DEFAULTS
-    scanDelay = config.get("scanDelay", 300)
-    registryTimeout = config.get("registryTimeout", 5)
-    secretsFile = config.get("secretsFile", "/etc/secrets/.dockerconfigjson")
-    restartTimeout = config.get("restartTimeout", 60)
-    logLevel = LOG_LEVELS[config.get("loglevel", "DEBUG")]
-    notifications = config.get("notifications", None)
-    startRated = config.get("startRated", False)
-    hcPort = config.get("hcPort", 8080)
-    hcLog = config.get("hcLog", False)
 
     logger.setLevel(logLevel)
     handler.setLevel(logLevel)
-
-    global rates
-    rates = config.get("rates", {})
-    if startRated:
-        logger.info("starting with rates set")
-        times = dict(rates)
-    else:
-        times = { i: 0 for i in rates }
-        logger.info(f"rate times: {times}")
-
-    ###
-    checks["config"] = True
-    ###
 
     logger.info("Loading kubeconfig from the cluster")
     kubernetes.config.load_incluster_config() 
