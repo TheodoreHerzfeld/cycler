@@ -197,9 +197,11 @@ def main():
     global rates
     rates = config.get("rates", {})
     if startRated:
+        logger.info("starting with rates set")
         times = dict(rates)
     else:
         times = { i: 0 for i in rates }
+        logger.info(f"rate times: {times}")
 
     ###
     checks["config"] = True
